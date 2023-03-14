@@ -1,11 +1,16 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask, jsonify
+from flask_cors import CORS
 import requests
 
 load_dotenv()
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/": { "origins": [
+    "http://localhost:5173",
+    "https://cemantix-api.onrender.com/"]
+}})
 
 # ENV variables for Notion integration
 CEMANTIX_NOTION_TOKEN = os.getenv("CEMANTIX_NOTION_TOKEN")
@@ -20,15 +25,15 @@ def get_stats():
     return jsonify(build_stats()), 200
 
 def build_stats():
-    cemantix_data = fetch_cemantix_data(CEMANTIX_NOTION_TOKEN, CEMANTIX_DATABASE_ID)
-    cemantle_data = fetch_cemantix_data(CEMANTLE_NOTION_TOKEN, CEMANTLE_DATABASE_ID)
+    # cemantix_data = fetch_cemantix_data(CEMANTIX_NOTION_TOKEN, CEMANTIX_DATABASE_ID)
+    # cemantle_data = fetch_cemantix_data(CEMANTLE_NOTION_TOKEN, CEMANTLE_DATABASE_ID)
 
     return {
         "cemantix": {
-            "lastWord": retrieve_word_of_the_day(cemantix_data)
+            "lastWord": 'cemantixWord'
         },
         "cemantle": {
-            "lastWord": retrieve_word_of_the_day(cemantle_data)
+            "lastWord": 'cemantleWord'
         }
     }
 
