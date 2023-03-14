@@ -7,10 +7,7 @@ import requests
 load_dotenv()
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"/": { "origins": [
-    "http://localhost:5173",
-    "https://cemantix-api.onrender.com/"]
-}})
+CORS(app)
 
 # ENV variables for Notion integration
 CEMANTIX_NOTION_TOKEN = os.getenv("CEMANTIX_NOTION_TOKEN")
