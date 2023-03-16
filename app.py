@@ -15,22 +15,28 @@ CEMANTIX_DATABASE_ID = os.getenv("CEMANTIX_DATABASE_ID")
 CEMANTLE_NOTION_TOKEN = os.getenv("CEMANTLE_NOTION_TOKEN")
 CEMANTLE_DATABASE_ID = os.getenv("CEMANTLE_DATABASE_ID")
 
-PAYLOAD = {"page_size": 500}
+PAYLOAD = {"page_size": 1}
 
 @app.route('/')
 def get_stats():
     return jsonify(build_stats()), 200
 
 def build_stats():
-    # cemantix_data = fetch_cemantix_data(CEMANTIX_NOTION_TOKEN, CEMANTIX_DATABASE_ID)
-    # cemantle_data = fetch_cemantix_data(CEMANTLE_NOTION_TOKEN, CEMANTLE_DATABASE_ID)
+    cemantix_data = fetch_cemantix_data(CEMANTIX_NOTION_TOKEN, CEMANTIX_DATABASE_ID)
+    cemantle_data = fetch_cemantix_data(CEMANTLE_NOTION_TOKEN, CEMANTLE_DATABASE_ID)
 
     return {
         "cemantix": {
-            "lastWord": 'cemantixWord'
+            "lastWord": retrieve_word_of_the_day(cemantix_data),
+            "elapsedTime": retrieve_elapsed_time(cemantix_data),
+            "requestsNumber": retrieve_requests_number(cemantix_data),
+            "date": retrieve_word_date(cemantix_data)
         },
         "cemantle": {
-            "lastWord": 'cemantleWord'
+            "lastWord": retrieve_word_of_the_day(cemantle_data),
+            "elapsedTime": retrieve_elapsed_time(cemantle_data),
+            "requestsNumber": retrieve_requests_number(cemantle_data),
+            "date": retrieve_word_date(cemantle_data)
         }
     }
 
@@ -52,3 +58,20 @@ def retrieve_word_of_the_day(data):
     word = data.json()["results"][0]["properties"]["Word"]["rich_text"][0]["plain_text"]
 
     return word
+
+def retrieve_elapsed_time(data):
+    elapsed_time = data.json()["results"][0]["properties"]["Elapsed time"]["rich_text"][0]["plain_text"]
+
+    return elapsed_time
+
+def retrieve_requests_number(data):
+    requests_number = data.json()["results"][0]["properties"]["Attempts"]["number"]
+
+    return requests_number
+
+def retrieve_word_date(data):
+    date = data.json()["results"][0]["properties"]["Date"]["rich_text"][0]["plain_text"]
+    parsed_date = date.split('/')
+    result = f"{parsed_date[1]}/{parsed_date[0]}/{parsed_date[2]}"
+
+    return result
