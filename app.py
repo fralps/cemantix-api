@@ -62,7 +62,7 @@ def retrieve_word_of_the_day(data):
 def retrieve_elapsed_time(data):
     elapsed_time = data.json()["results"][0]["properties"]["Elapsed time"]["rich_text"][0]["plain_text"]
 
-    return elapsed_time
+    return elapsed_time[:elapsed_time.rfind('.')]
 
 def retrieve_requests_number(data):
     requests_number = data.json()["results"][0]["properties"]["Attempts"]["number"]
