@@ -1,9 +1,15 @@
-# README
+# Cemantix API
 
-This is the [Flask](http://flask.pocoo.org/) [quick start](http://flask.pocoo.org/docs/1.0/quickstart/#a-minimal-application) example for [Render](https://render.com).
+API to retrieve Cemantix & Cemantle data from the Notion databases
 
-The app in this repo is deployed at [https://flask.onrender.com](https://flask.onrender.com).
+### Tech stack
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
 
-## Deployment
+### Usage
 
-Follow the guide at https://render.com/docs/deploy-flask.
+- Install packages detailed in `requirements.txt`
+- Run the `dev` script located in `./scripts/`:
+```bash
+./scripts/dev
+```
+- App is running on port `8000`
