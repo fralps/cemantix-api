@@ -1,3 +1,4 @@
+"""Module providing a function to get env variables"""
 import os
 from dotenv import load_dotenv
 from flask import Flask, jsonify
@@ -8,8 +9,8 @@ load_dotenv()
 
 app = Flask(__name__)
 CORS(app, origins=[
-  'http://localhost:5173',
-  'https://cemantix-ui.vercel.app'
+    'http://localhost:5173',
+    'https://cemantix-ui.vercel.app'
 ])
 
 
@@ -21,13 +22,19 @@ CEMANTLE_DATABASE_ID = os.getenv("CEMANTLE_DATABASE_ID")
 
 PAYLOAD = {"page_size": 1}
 
+
 @app.route('/')
 def get_stats():
+    """Function building json response."""
     return jsonify(build_stats()), 200
 
+
 def build_stats():
-    cemantix_data = fetch_cemantix_data(CEMANTIX_NOTION_TOKEN, CEMANTIX_DATABASE_ID)
-    cemantle_data = fetch_cemantix_data(CEMANTLE_NOTION_TOKEN, CEMANTLE_DATABASE_ID)
+    """Function retrieving building stats json."""
+    cemantix_data = fetch_cemantix_data(
+        CEMANTIX_NOTION_TOKEN, CEMANTIX_DATABASE_ID)
+    cemantle_data = fetch_cemantix_data(
+        CEMANTLE_NOTION_TOKEN, CEMANTLE_DATABASE_ID)
 
     return {
         "cemantix": {
@@ -44,7 +51,9 @@ def build_stats():
         }
     }
 
+
 def fetch_cemantix_data(token, db_id):
+    """Function fetching cemantix data."""
     headers = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json",
@@ -52,29 +61,41 @@ def fetch_cemantix_data(token, db_id):
     }
     api_endpoint = f"https://api.notion.com/v1/databases/{db_id}/query"
 
-    response = requests.post(api_endpoint, json=PAYLOAD, headers=headers)
+    response = requests.post(api_endpoint, json=PAYLOAD, headers=headers, timeout=30)
 
     print(response.status_code, response.reason)
 
     return response
 
+
 def retrieve_word_of_the_day(data):
-    word = data.json()["results"][0]["properties"]["Word"]["rich_text"][0]["plain_text"]
+    """Function retrieving word of the day."""
+    word = data.json()[
+        "results"][0]["properties"]["Word"]["rich_text"][0]["plain_text"]
 
     return word
 
+
 def retrieve_elapsed_time(data):
-    elapsed_time = data.json()["results"][0]["properties"]["Elapsed time"]["rich_text"][0]["plain_text"]
+    """Function retrieving elapsed time."""
+    elapsed_time = data.json(
+    )["results"][0]["properties"]["Elapsed time"]["rich_text"][0]["plain_text"]
 
     return elapsed_time[:elapsed_time.rfind('.')]
 
+
 def retrieve_requests_number(data):
-    requests_number = data.json()["results"][0]["properties"]["Attempts"]["number"]
+    """Function retrieving request number."""
+    requests_number = data.json(
+    )["results"][0]["properties"]["Attempts"]["number"]
 
     return requests_number
 
+
 def retrieve_word_date(data):
-    date = data.json()["results"][0]["properties"]["Date"]["rich_text"][0]["plain_text"]
+    """Function retrieving word date."""
+    date = data.json()[
+        "results"][0]["properties"]["Date"]["rich_text"][0]["plain_text"]
     parsed_date = date.split('/')
     result = f"{parsed_date[1]}/{parsed_date[0]}/{parsed_date[2]}"
 
