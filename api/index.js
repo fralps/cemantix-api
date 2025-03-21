@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
-import { config } from 'dotenv'
 import { cors } from 'hono/cors';
+import { handle } from 'hono/vercel'
+import { config } from 'dotenv'
 
 // Load environment variables
 config()
@@ -23,12 +24,12 @@ app.use('*', cors({
 
 const PAYLOAD = { page_size: 1 };
 
-app.get('/', async (c) => {
-  const stats = await buildStats(c.env);
+app.get('/api', async (c) => {
+  const stats = await buildStats();
   return c.json(stats);
 });
 
-async function buildStats(env) {
+async function buildStats() {
   const [cemantixData, cemantleData] = await Promise.all([
     fetchCemantixData(CEMANTIX_NOTION_TOKEN, CEMANTIX_DATABASE_ID),
     fetchCemantixData(CEMANTLE_NOTION_TOKEN, CEMANTLE_DATABASE_ID),
@@ -89,4 +90,6 @@ const retrieveWordDate = (data) => {
   return `${parsed[1]}/${parsed[0]}/${parsed[2]}`;
 }
 
-export default app;
+const handler = handle(app);
+
+export const GET = handler;
