@@ -1,13 +1,16 @@
 {
-  "type": "module", 
+  "type": "module",
   "scripts": {
+    "dev": "bun run --hot api/index.js",
     "start": "vercel dev",
-    "deploy": "vercel"
+    "deploy-preview": "vercel",
+    "deploy-prod": "vercel --prod"
   },
   "dependencies": {
+    "dotenv": "^16.4.7",
     "hono": "^4.4.2"
   },
   "devDependencies": {
-    "vercel": "^32.4.1"
+    "vercel": "^41.4.1"
   }
 }
