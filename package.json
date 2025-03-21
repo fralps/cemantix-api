@@ -1,7 +1,7 @@
 {
+  "name": "cemantix-api",
   "type": "module",
   "scripts": {
-    "dev": "bun run --hot api/index.js",
     "start": "vercel dev",
     "deploy-preview": "vercel",
     "deploy-prod": "vercel --prod"

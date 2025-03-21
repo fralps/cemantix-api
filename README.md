@@ -1,20 +1,17 @@
-This is a [honojs/hono](https://hono.dev/) starter kit for deploying on Vercel.
+# Cemantix API
 
-## Getting Started
+API to retrieve Cemantix & Cemantle data from the Notion databases
 
-First, run the development server:
+## Tech stack
+
+![TypeScript](https://img.shields.io/badge/typescript-007ACC?style=flat&logo=typescript&logoColor=white) ![Hono](https://img.shields.io/badge/hono-%23F0DB4F.svg?style=flat&logo=hono&logoColor=black) ![Bun](https://img.shields.io/badge/bun-%23F0DB4F.svg?style=flat&logo=bun&logoColor=black) ![Vercel](https://img.shields.io/badge/Vercel-%23000000.svg?style=flat&logo=vercel&logoColor=white)
+
+### Usage
+
+- Run the `dev` script located in `./scripts/`:
 
 ```bash
-npm install
-npm run start #vercel dev will run
+./scripts/dev
 ```
 
-Follow the setup guide to select a Vercel project.
-
-Open [http://localhost:3000/api](http://localhost:3000/api) with your browser to see the result.
-
-You can start editing the API by modifying `api/index.ts` and learn more by taking a look to the [API documentation](https://hono.dev/api/hono).
-
-## Deploy on Vercel
-
-The easiest way to deploy your Hono app is to use the [Vercel Platform](https://vercel.com/templates?search=hono).
+- App is running on port `3000/api`
