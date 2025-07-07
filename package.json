@@ -7,7 +7,7 @@
     "deploy-prod": "vercel --prod"
   },
   "dependencies": {
-    "dotenv": "^17.0.0",
+    "dotenv": "^17.0.1",
     "hono": "^4.8.4"
   },
   "devDependencies": {
