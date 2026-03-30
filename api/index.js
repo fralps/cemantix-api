@@ -22,7 +22,11 @@ app.use('*', cors({
   ]
 }));
 
-const PAYLOAD = { page_size: 1 };
+const PROPERTIES = ['Word', 'Date', 'Elapsed time', 'Attempts'];
+const PAYLOAD = {
+  page_size: 1,
+  sorts: [{ timestamp: 'created_time', direction: 'descending' }],
+};
 
 app.get('/api', async (c) => {
   const stats = await buildStats();
@@ -35,20 +39,34 @@ async function buildStats() {
     fetchCemantixData(CEMANTLE_NOTION_TOKEN, CEMANTLE_DATABASE_ID),
   ]);
 
+  const sortedCemantix = sortByDateDesc(cemantixData);
+  const sortedCemantle = sortByDateDesc(cemantleData);
+
   return {
     cemantix: {
-      lastWord: retrieveWordOfTheDay(cemantixData),
-      elapsedTime: retrieveElapsedTime(cemantixData),
-      requestsNumber: retrieveRequestsNumber(cemantixData),
-      date: retrieveWordDate(cemantixData),
+      lastWord: retrieveWordOfTheDay(sortedCemantix),
+      elapsedTime: retrieveElapsedTime(sortedCemantix),
+      requestsNumber: retrieveRequestsNumber(sortedCemantix),
+      date: retrieveWordDate(sortedCemantix),
     },
     cemantle: {
-      lastWord: retrieveWordOfTheDay(cemantleData),
-      elapsedTime: retrieveElapsedTime(cemantleData),
-      requestsNumber: retrieveRequestsNumber(cemantleData),
-      date: retrieveWordDate(cemantleData),
+      lastWord: retrieveWordOfTheDay(sortedCemantle),
+      elapsedTime: retrieveElapsedTime(sortedCemantle),
+      requestsNumber: retrieveRequestsNumber(sortedCemantle),
+      date: retrieveWordDate(sortedCemantle),
     },
   };
+}
+
+function sortByDateDesc(data) {
+  const sorted = [...data.results].sort((a, b) => {
+    const dateA = a.properties.Date?.rich_text?.[0]?.plain_text || '';
+    const dateB = b.properties.Date?.rich_text?.[0]?.plain_text || '';
+    const numA = dateA.split('/').reverse().join('');
+    const numB = dateB.split('/').reverse().join('');
+    return numB.localeCompare(numA);
+  });
+  return sorted;
 }
 
 async function fetchCemantixData(token, dbId) {
@@ -58,8 +76,9 @@ async function fetchCemantixData(token, dbId) {
     'Notion-Version': '2021-08-16',
   };
 
+  const filterProps = PROPERTIES.map(p => `filter_properties[]=${encodeURIComponent(p)}`).join('&');
   const response = await fetch(
-    `https://api.notion.com/v1/databases/${dbId}/query`,
+    `https://api.notion.com/v1/databases/${dbId}/query?${filterProps}`,
     {
       method: 'POST',
       headers,
@@ -71,21 +90,21 @@ async function fetchCemantixData(token, dbId) {
   return await response.json();
 }
 
-const retrieveWordOfTheDay = (data) => {
-  return data.results[0].properties.Word.rich_text[0].plain_text;
+const retrieveWordOfTheDay = (results) => {
+  return results[0].properties.Word?.rich_text?.[0]?.plain_text || '';
 }
 
-const retrieveElapsedTime = (data) => {
-  const elapsed = data.results[0].properties['Elapsed time'].rich_text[0].plain_text;
+const retrieveElapsedTime = (results) => {
+  const elapsed = results[0].properties['Elapsed time']?.rich_text?.[0]?.plain_text || '';
   return elapsed.slice(0, elapsed.lastIndexOf('.'));
 }
 
-const retrieveRequestsNumber = (data) => {
-  return data.results[0].properties.Attempts.number;
+const retrieveRequestsNumber = (results) => {
+  return results[0].properties.Attempts?.number || 0;
 }
 
-const retrieveWordDate = (data) => {
-  const date = data.results[0].properties.Date.rich_text[0].plain_text;
+const retrieveWordDate = (results) => {
+  const date = results[0].properties.Date?.rich_text?.[0]?.plain_text || '';
   const parsed = date.split('/');
   return `${parsed[1]}/${parsed[0]}/${parsed[2]}`;
 }
