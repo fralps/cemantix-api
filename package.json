@@ -11,6 +11,6 @@
     "hono": "^4.12.12"
   },
   "devDependencies": {
-    "vercel": "^50.39.0"
+    "vercel": "^50.44.0"
   }
 }
