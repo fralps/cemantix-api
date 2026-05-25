@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "dotenv": "^17.4.2",
-    "hono": "^4.12.19"
+    "hono": "^4.12.23"
   },
   "devDependencies": {
     "vercel": "^54.1.0"
